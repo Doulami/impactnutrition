@@ -59,7 +59,7 @@ const CreateTenantPage = () => {
       });
 
       if (response.ok) {
-        navigate("/a/tenants");
+        navigate("/tenants");
       } else {
         const error = await response.json();
         alert(`Failed to create tenant: ${error.message || "Unknown error"}`);
@@ -81,7 +81,7 @@ const CreateTenantPage = () => {
             Configure a new tenant for your multi-tenant platform
           </p>
         </div>
-        <Button variant="secondary" onClick={() => navigate("/a/tenants")}>
+        <Button variant="secondary" onClick={() => navigate("/tenants")}>
           <ArrowUturnLeft className="mr-2" />
           Back to List
         </Button>
@@ -302,7 +302,7 @@ const CreateTenantPage = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => navigate("/a/tenants")}
+            onClick={() => navigate("/tenants")}
             disabled={loading}
           >
             Cancel

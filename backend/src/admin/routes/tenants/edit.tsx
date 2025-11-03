@@ -10,11 +10,12 @@ import {
   Switch,
 } from "@medusajs/ui";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowUturnLeft } from "@medusajs/icons";
 
 const EditTenantPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -95,7 +96,7 @@ const EditTenantPage = () => {
       });
 
       if (response.ok) {
-        navigate(`/a/tenants/${id}`);
+        navigate(`/tenants/detail?id=${id}`);
       } else {
         const error = await response.json();
         alert(`Failed to update tenant: ${error.message || "Unknown error"}`);
@@ -127,7 +128,7 @@ const EditTenantPage = () => {
         </div>
         <Button
           variant="secondary"
-          onClick={() => navigate(`/a/tenants/${id}`)}
+          onClick={() => navigate(`/tenants/detail?id=${id}`)}
         >
           <ArrowUturnLeft className="mr-2" />
           Back to Details
@@ -331,7 +332,7 @@ const EditTenantPage = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => navigate(`/a/tenants/${id}`)}
+            onClick={() => navigate(`/tenants/detail?id=${id}`)}
             disabled={saving}
           >
             Cancel

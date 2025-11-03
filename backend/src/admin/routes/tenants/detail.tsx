@@ -1,7 +1,7 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
 import { Container, Heading, Button, Badge } from "@medusajs/ui";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowUturnLeft, PencilSquare } from "@medusajs/icons";
 
 type Tenant = {
@@ -22,7 +22,8 @@ type Tenant = {
 };
 
 const TenantDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const navigate = useNavigate();
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +76,7 @@ const TenantDetailPage = () => {
       <Container>
         <div className="flex flex-col items-center justify-center py-12">
           <p className="text-gray-500 mb-4">Tenant not found</p>
-          <Button variant="secondary" onClick={() => navigate("/a/tenants")}>
+          <Button variant="secondary" onClick={() => navigate("/tenants")}>
             Back to Tenants
           </Button>
         </div>
@@ -94,13 +95,13 @@ const TenantDetailPage = () => {
           <p className="text-gray-600 mt-1 font-mono text-sm">{tenant.id}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => navigate("/a/tenants")}>
+          <Button variant="secondary" onClick={() => navigate("/tenants")}>
             <ArrowUturnLeft className="mr-2" />
             Back to List
           </Button>
           <Button
             variant="primary"
-            onClick={() => navigate(`/a/tenants/${id}/edit`)}
+            onClick={() => navigate(`/tenants/edit?id=${id}`)}
           >
             <PencilSquare className="mr-2" />
             Edit Tenant
@@ -237,19 +238,19 @@ const TenantDetailPage = () => {
           <div className="grid grid-cols-3 gap-4">
             <Button
               variant="secondary"
-              onClick={() => navigate(`/a/products?tenant=${tenant.id}`)}
+              onClick={() => navigate(`/products?tenant=${tenant.id}`)}
             >
               View Products
             </Button>
             <Button
               variant="secondary"
-              onClick={() => navigate(`/a/orders?tenant=${tenant.id}`)}
+              onClick={() => navigate(`/orders?tenant=${tenant.id}`)}
             >
               View Orders
             </Button>
             <Button
               variant="secondary"
-              onClick={() => navigate(`/a/customers?tenant=${tenant.id}`)}
+              onClick={() => navigate(`/customers?tenant=${tenant.id}`)}
             >
               View Customers
             </Button>

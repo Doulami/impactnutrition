@@ -93,7 +93,7 @@ const TenantsPage = () => {
         </div>
         <Button
           variant="primary"
-          onClick={() => navigate("/a/tenants/create")}
+          onClick={() => navigate("create")}
         >
           <Plus className="mr-2" />
           Create Tenant
@@ -103,7 +103,7 @@ const TenantsPage = () => {
       {tenants.length === 0 ? (
         <div className="border border-dashed border-gray-300 rounded-lg p-12 text-center">
           <p className="text-gray-500 mb-4">No tenants found</p>
-          <Button variant="secondary" onClick={() => navigate("/a/tenants/create")}>
+          <Button variant="secondary" onClick={() => navigate("create")}>
             Create your first tenant
           </Button>
         </div>
@@ -126,7 +126,7 @@ const TenantsPage = () => {
               <Table.Row
                 key={tenant.id}
                 className="cursor-pointer hover:bg-gray-50"
-                onClick={() => navigate(`/a/tenants/${tenant.id}`)}
+                onClick={() => navigate(`detail?id=${tenant.id}`)}
               >
                 <Table.Cell className="font-mono text-sm">
                   {tenant.id}
@@ -155,7 +155,7 @@ const TenantsPage = () => {
                       variant="transparent"
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/a/tenants/${tenant.id}/edit`);
+                        navigate(`edit?id=${tenant.id}`);
                       }}
                     >
                       <PencilSquare />
