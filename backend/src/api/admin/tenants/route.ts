@@ -10,7 +10,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const tenants = await tenantService.listTenants();
     
     res.json({ tenants });
@@ -31,7 +31,7 @@ export async function POST(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const tenant = await tenantService.createTenant(req.body);
     
     res.status(201).json({ tenant });

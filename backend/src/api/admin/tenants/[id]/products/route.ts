@@ -10,7 +10,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const { id } = req.params;
     
     const products = await tenantService.getTenantProducts(id);
@@ -33,9 +33,9 @@ export async function POST(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const { id: tenantId } = req.params;
-    const { product_id, price, is_active } = req.body;
+    const { product_id, enabled, custom_title, custom_description, custom_metadata } = req.body;
     
     if (!product_id) {
       return res.status(400).json({ 
@@ -45,9 +45,8 @@ export async function POST(
     
     const product = await tenantService.optInProduct(
       tenantId, 
-      product_id, 
-      price, 
-      is_active ?? true
+      product_id,
+      { enabled, custom_title, custom_description, custom_metadata }
     );
     
     res.status(201).json({ product });

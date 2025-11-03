@@ -10,7 +10,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const { id } = req.params;
     
     const tenant = await tenantService.getTenantById(id);
@@ -40,7 +40,7 @@ export async function PATCH(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const { id } = req.params;
     
     const tenant = await tenantService.updateTenant(id, req.body);
@@ -70,7 +70,7 @@ export async function DELETE(
   res: MedusaResponse
 ) {
   try {
-    const tenantService: TenantService = req.scope.resolve("tenantService");
+    const tenantService: TenantService = req.scope.resolve("tenantModuleService");
     const { id } = req.params;
     
     await tenantService.deactivateTenant(id);
