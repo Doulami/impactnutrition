@@ -1,0 +1,34 @@
+[
+  {
+    "id": "hq",
+    "name": "Impact Nutrition HQ",
+    "currency_code": "TND",
+    "default_locale": "fr",
+    "supported_locales": ["fr", "ar", "en"],
+    "tax_rate": null,
+    "tax_inclusive_pricing": false,
+    "tax_rules": [],
+    "allowed_payment_methods": ["stripe", "cash_on_delivery"],
+    "payment_provider_config": {},
+    "shipping_regions": ["TN"],
+    "shipping_provider_config": {},
+    "domain": "impactnutrition.com.tn",
+    "subdomain": null,
+    "capabilities": {
+      "subscriptions_enabled": false,
+      "loyalty_points_enabled": false,
+      "influencer_program_enabled": false,
+      "coach_portal_enabled": false,
+      "b2b_pricing_enabled": false,
+      "gift_cards_enabled": false
+    },
+    "brand_colors": {
+      "primary": "#000000",
+      "secondary": "#FFFFFF",
+      "accent": "#FF0000"
+    },
+    "logo_url": null,
+    "favicon_url": null,
+    "status": "active"
+  }
+]

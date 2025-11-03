@@ -1,0 +1,62 @@
+[
+  {
+    "id": "policy_global_admin",
+    "role": "GlobalAdmin",
+    "resource": "*",
+    "actions": ["*"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  },
+  {
+    "id": "policy_tenant_admin_product",
+    "role": "TenantAdmin",
+    "resource": "product",
+    "actions": ["create", "read", "update", "delete"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  },
+  {
+    "id": "policy_tenant_admin_order",
+    "role": "TenantAdmin",
+    "resource": "order",
+    "actions": ["read", "update", "cancel"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  },
+  {
+    "id": "policy_tenant_admin_customer",
+    "role": "TenantAdmin",
+    "resource": "customer",
+    "actions": ["read", "update"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  },
+  {
+    "id": "policy_catalog_mgr_product",
+    "role": "CatalogMgr",
+    "resource": "product",
+    "actions": ["create", "read", "update", "delete"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  },
+  {
+    "id": "policy_order_ops_order",
+    "role": "OrderOps",
+    "resource": "order",
+    "actions": ["read", "update", "fulfill", "refund"],
+    "conditions": null,
+    "version": 1,
+    "effective_from": "2025-11-03T00:00:00Z",
+    "effective_until": null
+  }
+]

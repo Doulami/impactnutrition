@@ -1,0 +1,98 @@
+# Create Custom Feature Flag
+
+In this chapter, you'll learn how to create a custom feature flag in Medusa.
+
+## Why Create a Custom Feature Flag?
+
+As explained in the [Feature Flags](https://docs.medusajs.com/learn/debugging-and-testing/feature-flags) chapter, feature flags allow the Medusa team to ship new features that are still under development and testing, but not ready for production or wide use yet.
+
+You can also create custom feature flags for your Medusa project or plugin to control the availability of experimental or in-development features. Feature flags allow you to test features in staging, and only enable them in production when they are ready.
+
+***
+
+## How to Create a Custom Feature Flag
+
+### 1. Define the Feature Flag
+
+To create a custom feature flag, you need to define it in a new file under the `src/feature-flags` directory of your Medusa project or plugin. The file must export a configuration object.
+
+For example, to define a feature flag that enables a blog feature, create the file `src/feature-flags/blog.ts` with the following content:
+
+```ts title="src/feature-flags/blog.ts" highlights={featureFlagHighlights}
+import { FlagSettings } from "@medusajs/framework/feature-flags"
+
+const BlogFeatureFlag: FlagSettings = {
+  key: "blog_feature",
+  default_val: false,
+  env_key: "FF_BLOG_FEATURE",
+  description: "Enable blog features",
+}
+
+export default BlogFeatureFlag
+```
+
+The feature flag configuration is an object having the following properties:
+
+- key: (\`string\`) The unique identifier for the feature flag. This key is used to enable or disable the feature flag and check its status.
+- default\_val: (\`boolean\`) Whether the feature flag is enabled by default.
+- env\_key: (\`string\`) The environment variable key for the feature flag. This key is used to enable or disable the feature flag using environment variables.
+- description: (\`string\`) A brief description of what the feature flag does.
+
+### 2. Hide Features Behind the Flag
+
+Next, you can build the features you want to hide behind the feature flag.
+
+To build backend customizations around feature flags, you can either:
+
+- [Conditionally run code blocks](https://docs.medusajs.com/learn/debugging-and-testing/feature-flags#conditionally-run-code-blocks) based on the feature flag status;
+- [Conditionally load files](https://docs.medusajs.com/learn/debugging-and-testing/feature-flags#conditionally-load-files) if the feature flag is not enabled.
+
+For client customizations, such as admin widgets, you can use the [Feature Flags API route](https://docs.medusajs.com/learn/debugging-and-testing/feature-flags#feature-flags-api-route).
+
+### 3. Toggle Feature Flag
+
+To enable or disable your custom feature flag, you can either add it to your `medusa-config.ts` file:
+
+```ts title="medusa-config.ts"
+import BlogFeatureFlag from "./src/feature-flags/blog"
+
+module.exports = defineConfig({
+  // ...
+  featureFlags: {
+    [BlogFeatureFlag.key]: true,
+  },
+})
+```
+
+Or set the environment variable for the feature flag:
+
+```shell
+FF_BLOG_FEATURE=true
+```
+
+Afterwards, make sure to [run migrations](https://docs.medusajs.com/learn/fundamentals/data-models/write-migration#run-the-migration) if your feature flag requires database changes.
+
+If you're disabling a feature flag, make sure to [roll back any migrations](https://docs.medusajs.com/learn/fundamentals/data-models/write-migration#rollback-the-migration) that depend on it first.
+
+***
+
+## Write Tests for Features Behind Flags
+
+If you're writing integration tests for features hidden behind feature flags, you can enable the feature flag's environment variable in your integration test using the `env` option.
+
+For example:
+
+```ts title="integration-tests/http/test.spec.ts"
+import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
+
+medusaIntegrationTestRunner({
+  env: {
+    FF_BLOG_FEATURE: true,
+  },
+  testSuite: ({ api, getContainer }) => {
+    // TODO write tests...
+  },
+})
+```
+
+Then, the Medusa application will load your customizations hidden behind the feature flag as part of the integration tests.

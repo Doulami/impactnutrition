@@ -1,0 +1,3 @@
+# Troubleshooting Guides
+
+The following troubleshooting guides are intended for technical users. If you're not a technical user, refer your technical team to this documentation.

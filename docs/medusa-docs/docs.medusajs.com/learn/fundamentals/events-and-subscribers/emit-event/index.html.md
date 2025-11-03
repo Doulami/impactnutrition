@@ -1,0 +1,197 @@
+# Emit Workflow and Service Events
+
+In this chapter, you'll learn about event types and how to emit an event in a service or workflow.
+
+## Event Types
+
+In your customization, you can emit an event, then listen to it in a subscriber and perform an asynchronus action, such as send a notification or data to a third-party system.
+
+There are two types of events in Medusa:
+
+1. Workflow event: an event that's emitted in a workflow after a commerce feature is performed. For example, Medusa emits the `order.placed` event after a cart is completed.
+2. Service event: an event that's emitted to track, trace, or debug processes under the hood. For example, you can emit an event with an audit trail.
+
+### Which Event Type to Use?
+
+**Workflow events** are the most common event type in development, as most custom features and customizations are built around workflows.
+
+Some examples of workflow events:
+
+1. When a user creates a blog post and you're emitting an event to send a newsletter email.
+2. When you finish syncing products to a third-party system and you want to notify the admin user of new products added.
+3. When a customer purchases a digital product and you want to generate and send it to them.
+
+You should only go for a **service event** if you're emitting an event for processes under the hood that don't directly affect front-facing features.
+
+Some examples of service events:
+
+1. When you're tracing data manipulation and changes, and you want to track every time some custom data is changed.
+2. When you're syncing data with a search engine.
+
+***
+
+## Emit Event in a Workflow
+
+To emit a workflow event, use the `emitEventStep` helper step provided in the `@medusajs/medusa/core-flows` package. It allows you to emit an event from within a workflow, and it only emits the event after the workflow has finished successfully.
+
+For example:
+
+```ts highlights={highlights}
+import { 
+  createWorkflow,
+} from "@medusajs/framework/workflows-sdk"
+import {
+  emitEventStep,
+} from "@medusajs/medusa/core-flows"
+
+const helloWorldWorkflow = createWorkflow(
+  "hello-world",
+  () => {
+    // ...
+
+    emitEventStep({
+      eventName: "custom.created",
+      data: {
+        id: "123",
+        // other data payload
+      },
+    })
+  }
+)
+```
+
+The `emitEventStep` accepts an object having the following properties:
+
+- `eventName`: The event's name.
+- `data`: The data payload as an object. You can pass any properties in the object, and subscribers listening to the event will receive this data in the event's payload.
+
+In this example, you emit the event `custom.created` and pass in the data payload an ID property.
+
+### Test it Out
+
+If you execute the workflow, the event is emitted and you can see it in your application's logs.
+
+Any subscribers listening to the event are executed.
+
+***
+
+## Emit Event in a Service
+
+To emit a service event:
+
+1. Resolve `event_bus` from the module's container in your service's constructor:
+
+### Extending Service Factory
+
+```ts title="src/modules/blog/service.ts" highlights={["9"]}
+import { IEventBusService } from "@medusajs/framework/types"
+import { MedusaService } from "@medusajs/framework/utils"
+
+class BlogModuleService extends MedusaService({
+  Post,
+}){
+  protected eventBusService_: AbstractEventBusModuleService
+
+  constructor({ event_bus }) {
+    super(...arguments)
+    this.eventBusService_ = event_bus
+  }
+}
+```
+
+### Without Service Factory
+
+```ts title="src/modules/blog/service.ts" highlights={["6"]}
+import { IEventBusService } from "@medusajs/framework/types"
+
+class BlogModuleService {
+  protected eventBusService_: AbstractEventBusModuleService
+
+  constructor({ event_bus }) {
+    this.eventBusService_ = event_bus
+  }
+}
+```
+
+2. Use the event bus service's `emit` method in the service's methods to emit an event:
+
+```ts title="src/modules/blog/service.ts" highlights={serviceHighlights}
+class BlogModuleService {
+  // ...
+  performAction() {
+    // TODO perform action
+
+    this.eventBusService_.emit({
+      name: "custom.event",
+      data: {
+        id: "123",
+        // other data payload
+      },
+    })
+  }
+}
+```
+
+The method accepts an object having the following properties:
+
+- `name`: The event's name.
+- `data`: The data payload as an object. You can pass any properties in the object, and subscribers listening to the event will receive this data in the event's payload.
+
+3. By default, the Event Module's service isn't injected into your module's container. To add it to the container, pass it in the module's registration object in `medusa-config.ts` in the `dependencies` property:
+
+### Module Registration
+
+```ts title="medusa-config.ts" highlights={depsHighlight}
+import { Modules } from "@medusajs/framework/utils"
+
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "./src/modules/blog",
+      dependencies: [
+        Modules.EVENT_BUS,
+      ],
+    },
+  ],
+})
+```
+
+### Module Provider Registration
+
+```ts title="medusa-config.ts" highlights={depsHighlight}
+import { Modules } from "@medusajs/framework/utils"
+
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      dependencies: [
+        Modules.EVENT_BUS,
+      ],
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/my-provider",
+            id: "my-provider",
+            options: {
+              // ...
+            },
+          },
+        ],
+      },
+    },
+  ],
+})
+```
+
+The `dependencies` property accepts an array of module registration keys. The specified modules' main services are injected into the module's container.
+
+If a module has providers, the dependencies are also injected into the providers' containers.
+
+### Test it Out
+
+If you execute the `performAction` method of your service, the event is emitted and you can see it in your application's logs.
+
+Any subscribers listening to the event are also executed.

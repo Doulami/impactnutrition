@@ -1,0 +1,155 @@
+# API Route Response
+
+In this chapter, you'll learn how to send a response in your API route.
+
+## Send a JSON Response
+
+To send a JSON response, use the `json` method of the `MedusaResponse` object that is passed as the second parameter of your API route handler.
+
+For example:
+
+```ts title="src/api/custom/route.ts" highlights={jsonHighlights}
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
+  res.json({
+    message: "Hello, World!",
+  })
+}
+```
+
+This API route returns the following JSON object:
+
+```json
+{
+  "message": "Hello, World!"
+}
+```
+
+***
+
+## Set Response Status Code
+
+By default, setting the JSON data using the `json` method returns a response with a `200` status code.
+
+To change the status code, use the `status` method of the `MedusaResponse` object.
+
+For example:
+
+```ts title="src/api/custom/route.ts" highlights={statusHighlight}
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
+  res.status(201).json({
+    message: "Hello, World!",
+  })
+}
+```
+
+The response of this API route has the status code `201`.
+
+***
+
+## Change Response Content Type
+
+To return response data other than a JSON object, you can either use the `set`, `setHeader`, or `writeHead` methods of the `MedusaResponse` object. They allow you to set the response headers, including the content type.
+
+### Example: Return PDF File
+
+To create an API route that returns a PDF file, you can set the `Content-Type` header to `application/pdf`:
+
+```ts title="src/api/custom/route.ts"
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
+  // assuming you have the PDF file as buffer
+  res.set({
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `attachment; filename="invoice-${id}.pdf"`,
+    "Content-Length": buffer.length,
+  })
+  res.send(buffer)
+}
+```
+
+The `set` method allows you to set multiple headers at once. It accepts an object of key-value header pairs.
+
+### Example: Return XML Content
+
+To create an API route that returns XML content, you can set the `Content-Type` header to `application/xml`:
+
+```ts title="src/api/custom/route.ts"
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
+  // Assuming you have XML string
+  res.set({
+    "Content-Type": "application/xml; charset=utf-8",
+  })
+  res.send(xmlString)
+}
+```
+
+### Example: Server-Sent Events (SSE)
+
+To create an API route that returns server-sent events (SSE), you can set the `Content-Type` header to `text/event-stream`:
+
+```ts highlights={streamHighlights}
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+  })
+
+  const interval = setInterval(() => {
+    res.write("data: Streaming data...\n\n")
+  }, 3000)
+
+  req.on("close", () => {
+    clearInterval(interval)
+    res.end()
+  })
+  
+  req.on("end", () => {
+    clearInterval(interval)
+    res.end()
+  })
+}
+```
+
+The `writeHead` method accepts two parameters:
+
+1. The first parameter is the response's status code.
+2. The second parameter is an object of key-value pairs to set the response headers.
+
+This API route opens a stream by setting the `Content-Type` to `text/event-stream`. It then simulates a stream by creating an interval that writes the stream data every three seconds.
+
+#### Tip: Fetching Stream with JS SDK
+
+The JS SDK has a `fetchStream` method that you can use to fetch data from an API route that returns a stream.
+
+Learn more in the [JS SDK](https://docs.medusajs.com/resources/js-sdk) documentation.
+
+***
+
+## Do More with Responses
+
+The `MedusaResponse` type is based on [Express's Response](https://expressjs.com/en/api.html#res). Refer to their API reference for other uses of responses.
