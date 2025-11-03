@@ -15,7 +15,11 @@
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
+    "seed:admin": "medusa exec ./src/scripts/seed-admin.ts",
+    "seed:medusa-admin": "medusa exec ./src/scripts/seed-medusa-admin.ts",
+    "seed:tunisia": "medusa exec ./src/scripts/seed-tunisia.ts",
     "seed:tenants": "medusa exec ./src/scripts/seed-tenants.ts",
+    "migrate:wc": "medusa exec ./src/scripts/wc-migration-complete.ts",
     "start": "medusa start",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -28,7 +32,11 @@
     "@medusajs/admin-sdk": "2.11.2",
     "@medusajs/cli": "2.11.2",
     "@medusajs/framework": "2.11.2",
-    "@medusajs/medusa": "2.11.2"
+    "@medusajs/medusa": "2.11.2",
+    "@medusajs/store": "^2.11.2",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
+    "mysql2": "^3.15.3"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.11.2",
